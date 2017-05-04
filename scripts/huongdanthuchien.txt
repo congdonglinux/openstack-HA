@@ -1,0 +1,30 @@
+if [ "$1" == "controller" ]; then
+      echo "$HOST_CTL" > $path_hostname
+      hostname -F $path_hostname
+  
+  elif [ "$1" == "compute1" ]; then
+      echo "$HOST_COM1" > $path_hostname
+      hostname -F $path_hostname
+
+  elif [ "$1" == "compute2" ]; then
+      echo "$HOST_COM2" > $path_hostname
+      hostname -F $path_hostname
+  else
+      echocolor "Cau hinh hostname that bai"
+      echocolor "Cau hinh hostname that bai"
+      exit 1
+fi
+
+echo "NAME=ens160" >> /etc/sysconfig/network-scripts/ifcfg-ens160
+nmcli con reload
+nmcli con show
+curl -O https://raw.githubusercontent.com/congto/openstack-HA/master/scripts/rabbitmq-bonding.sh
+
+
+sudo systemctl enable NetworkManager
+sudo systemctl start NetworkManager
+
+curl -O https://raw.githubusercontent.com/congto/openstack-HA/master/scripts/rabbitmq1-ipadd.sh && bash rabbitmq1-ipadd.sh
+
+- Đổi tên connection 
+nmcli c modify "System ens160" connection.id ens160
